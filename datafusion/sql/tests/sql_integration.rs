@@ -1866,7 +1866,7 @@ fn create_external_table_with_compression_type() {
     for sql in sqls {
         let err = logical_plan(sql).expect_err("query should have failed");
         assert_eq!(
-            "Plan(\"File compression type can be specified for CSV/JSON files.\")",
+            "Plan(\"File compression type cannot be set for PARQUET or AVRO files.\")",
             format!("{err:?}")
         );
     }
