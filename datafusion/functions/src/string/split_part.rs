@@ -97,11 +97,14 @@ fn split_part<T: OffsetSizeTrait>(args: &[ArrayRef]) -> Result<ArrayRef> {
         .zip(n_array.iter())
         .map(|((string, delimiter), n)| match (string, delimiter, n) {
             (Some(string), Some(delimiter), Some(n)) => {
-                if n <= 0 {
-                    exec_err!("field position must be greater than zero")
+                let split_string: Vec<&str> = string.split(delimiter).collect();
+                let len = split_string.len() as i64;
+                let index = if n < 0 { len + n } else { n - 1 };
+
+                if index < 0 || index >= len {
+                    Ok(Some(""))
                 } else {
-                    let split_string: Vec<&str> = string.split(delimiter).collect();
-                    match split_string.get(n as usize - 1) {
+                    match split_string.get(index as usize) {
                         Some(s) => Ok(Some(*s)),
                         None => Ok(Some("")),
                     }
