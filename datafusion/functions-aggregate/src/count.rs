@@ -271,7 +271,7 @@ impl AggregateUDFImpl for Count {
 }
 
 #[derive(Debug)]
-struct CountAccumulator {
+pub(super) struct CountAccumulator {
     count: i64,
 }
 
@@ -328,7 +328,7 @@ impl Accumulator for CountAccumulator {
 /// non-null values are seen in any group the output is 0. Thus, this
 /// accumulator has no additional null or seen filter tracking.
 #[derive(Debug)]
-struct CountGroupsAccumulator {
+pub(super) struct CountGroupsAccumulator {
     /// Count per group.
     ///
     /// Note this is an i64 and not a u64 (or usize) because the

@@ -58,6 +58,7 @@ pub mod macros;
 pub mod approx_distinct;
 pub mod correlation;
 pub mod count;
+pub mod count_star;
 pub mod covariance;
 pub mod first_last;
 pub mod hyperloglog;
@@ -100,6 +101,7 @@ pub mod expr_fn {
     pub use super::correlation::corr;
     pub use super::count::count;
     pub use super::count::count_distinct;
+    pub use super::count_star::count_star;
     pub use super::covariance::covar_pop;
     pub use super::covariance::covar_samp;
     pub use super::first_last::first_value;
@@ -134,6 +136,7 @@ pub fn all_default_aggregate_functions() -> Vec<Arc<AggregateUDF>> {
         sum::sum_udaf(),
         median::median_udaf(),
         count::count_udaf(),
+        count_star::count_star_udaf(),
         regr::regr_slope_udaf(),
         regr::regr_intercept_udaf(),
         regr::regr_count_udaf(),
