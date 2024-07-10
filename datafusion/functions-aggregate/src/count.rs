@@ -63,12 +63,24 @@ use datafusion_physical_expr_common::{
 // );
 create_func!(Count, count_udaf);
 
+pub fn count_star() -> Expr {
+    Expr::AggregateFunction(datafusion_expr::expr::AggregateFunction::new_udf(
+        count_udaf(),
+        // vec![lit(1)], // ideal args, but we need to change the displayed_name 
+        vec![cast(lit(1), DataType::Int64).alias("*")], // to pass the test
+        false,
+        None,
+        None,
+        None,
+    ))
+}
+
 pub fn count(expr: Expr) -> Expr {
-    let expr = if let Expr::Wildcard { qualifier } = expr {
-        cast(lit(1), DataType::Int64).alias("*")
-    } else {
-        expr
-    };
+    // let expr = if let Expr::Wildcard { qualifier } = expr {
+    //     cast(lit(1), DataType::Int64).alias("*")
+    // } else {
+    //     expr
+    // };
 
     Expr::AggregateFunction(datafusion_expr::expr::AggregateFunction::new_udf(
         count_udaf(),

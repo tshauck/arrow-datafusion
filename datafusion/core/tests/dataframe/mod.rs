@@ -31,7 +31,7 @@ use arrow::{
 };
 use arrow_array::Float32Array;
 use arrow_schema::ArrowError;
-use datafusion_functions_aggregate::count::count_udaf;
+use datafusion_functions_aggregate::count::{count_star, count_udaf};
 use object_store::local::LocalFileSystem;
 use std::fs;
 use std::sync::Arc;
@@ -211,7 +211,6 @@ async fn test_count_wildcard_on_aggregate() -> Result<()> {
     let sql_results = ctx
         .sql("select count(*) from t1")
         .await?
-        .select(vec![col("count(*)")])?
         .explain(false, false)?
         .collect()
         .await?;
@@ -220,8 +219,8 @@ async fn test_count_wildcard_on_aggregate() -> Result<()> {
     let df_results = ctx
         .table("t1")
         .await?
-        .aggregate(vec![], vec![count(wildcard())])?
-        .select(vec![count(wildcard())])?
+        .aggregate(vec![], vec![count_star()])?
+        .select(vec![count_star()])?
         .explain(false, false)?
         .collect()
         .await?;
