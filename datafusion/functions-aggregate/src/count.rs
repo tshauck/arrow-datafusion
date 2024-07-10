@@ -44,7 +44,7 @@ use datafusion_expr::{
     function::AccumulatorArgs, utils::format_state_name, Accumulator, AggregateUDFImpl,
     EmitTo, GroupsAccumulator, Signature, Volatility,
 };
-use datafusion_expr::{Expr, ReversedUDAF};
+use datafusion_expr::{cast, lit, Expr, ReversedUDAF};
 use datafusion_physical_expr_common::aggregate::groups_accumulator::accumulate::accumulate_indices;
 use datafusion_physical_expr_common::{
     aggregate::count_distinct::{
@@ -54,13 +54,31 @@ use datafusion_physical_expr_common::{
     binary_map::OutputType,
 };
 
-make_udaf_expr_and_func!(
-    Count,
-    count,
-    expr,
-    "Count the number of non-null values in the column",
-    count_udaf
-);
+// make_udaf_expr_and_func!(
+//     Count,
+//     count,
+//     expr,
+//     "Count the number of non-null values in the column",
+//     count_udaf
+// );
+create_func!(Count, count_udaf);
+
+pub fn count(expr: Expr) -> Expr {
+    let expr = if let Expr::Wildcard { qualifier } = expr {
+        cast(lit(1), DataType::Int64).alias("*")
+    } else {
+        expr
+    };
+
+    Expr::AggregateFunction(datafusion_expr::expr::AggregateFunction::new_udf(
+        count_udaf(),
+        vec![expr],
+        false,
+        None,
+        None,
+        None,
+    ))
+}
 
 pub fn count_distinct(expr: Expr) -> Expr {
     Expr::AggregateFunction(datafusion_expr::expr::AggregateFunction::new_udf(
