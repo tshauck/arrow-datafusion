@@ -2484,6 +2484,12 @@ impl serde::Serialize for CreateCatalogNode {
         if self.schema.is_some() {
             len += 1;
         }
+        if self.location.is_some() {
+            len += 1;
+        }
+        if self.managed_location.is_some() {
+            len += 1;
+        }
         let mut struct_ser = serializer.serialize_struct("datafusion.CreateCatalogNode", len)?;
         if !self.catalog_name.is_empty() {
             struct_ser.serialize_field("catalogName", &self.catalog_name)?;
@@ -2493,6 +2499,12 @@ impl serde::Serialize for CreateCatalogNode {
         }
         if let Some(v) = self.schema.as_ref() {
             struct_ser.serialize_field("schema", v)?;
+        }
+        if let Some(v) = self.location.as_ref() {
+            struct_ser.serialize_field("location", v)?;
+        }
+        if let Some(v) = self.managed_location.as_ref() {
+            struct_ser.serialize_field("managedLocation", v)?;
         }
         struct_ser.end()
     }
@@ -2509,6 +2521,9 @@ impl<'de> serde::Deserialize<'de> for CreateCatalogNode {
             "if_not_exists",
             "ifNotExists",
             "schema",
+            "location",
+            "managed_location",
+            "managedLocation",
         ];
 
         #[allow(clippy::enum_variant_names)]
@@ -2516,6 +2531,8 @@ impl<'de> serde::Deserialize<'de> for CreateCatalogNode {
             CatalogName,
             IfNotExists,
             Schema,
+            Location,
+            ManagedLocation,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -2540,6 +2557,8 @@ impl<'de> serde::Deserialize<'de> for CreateCatalogNode {
                             "catalogName" | "catalog_name" => Ok(GeneratedField::CatalogName),
                             "ifNotExists" | "if_not_exists" => Ok(GeneratedField::IfNotExists),
                             "schema" => Ok(GeneratedField::Schema),
+                            "location" => Ok(GeneratedField::Location),
+                            "managedLocation" | "managed_location" => Ok(GeneratedField::ManagedLocation),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -2562,6 +2581,8 @@ impl<'de> serde::Deserialize<'de> for CreateCatalogNode {
                 let mut catalog_name__ = None;
                 let mut if_not_exists__ = None;
                 let mut schema__ = None;
+                let mut location__ = None;
+                let mut managed_location__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::CatalogName => {
@@ -2582,12 +2603,26 @@ impl<'de> serde::Deserialize<'de> for CreateCatalogNode {
                             }
                             schema__ = map_.next_value()?;
                         }
+                        GeneratedField::Location => {
+                            if location__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("location"));
+                            }
+                            location__ = map_.next_value()?;
+                        }
+                        GeneratedField::ManagedLocation => {
+                            if managed_location__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("managedLocation"));
+                            }
+                            managed_location__ = map_.next_value()?;
+                        }
                     }
                 }
                 Ok(CreateCatalogNode {
                     catalog_name: catalog_name__.unwrap_or_default(),
                     if_not_exists: if_not_exists__.unwrap_or_default(),
                     schema: schema__,
+                    location: location__,
+                    managed_location: managed_location__,
                 })
             }
         }

@@ -301,6 +301,10 @@ pub struct CreateCatalogNode {
     pub if_not_exists: bool,
     #[prost(message, optional, tag = "3")]
     pub schema: ::core::option::Option<super::datafusion_common::DfSchema>,
+    #[prost(string, optional, tag = "4")]
+    pub location: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "5")]
+    pub managed_location: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

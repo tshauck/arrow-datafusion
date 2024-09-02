@@ -183,6 +183,8 @@ message CreateCatalogNode {
   string catalog_name = 1;
   bool if_not_exists = 2;
   datafusion_common.DfSchema schema = 3;
+  optional string location = 4;
+  optional string managed_location = 5;
 }
 
 message DropViewNode {

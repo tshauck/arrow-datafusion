@@ -364,11 +364,14 @@ impl<'a, S: ContextProvider> SqlToRel<'a, S> {
             Statement::CreateDatabase {
                 db_name,
                 if_not_exists,
-                ..
+                location,
+                managed_location,
             } => Ok(LogicalPlan::Ddl(DdlStatement::CreateCatalog(
                 CreateCatalog {
                     catalog_name: object_name_to_string(&db_name),
                     if_not_exists,
+                    location,
+                    managed_location,
                     schema: Arc::new(DFSchema::empty()),
                 },
             ))),

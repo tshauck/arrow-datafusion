@@ -268,6 +268,10 @@ pub struct CreateCatalog {
     pub catalog_name: String,
     /// Do nothing (except issuing a notice) if a schema with the same name already exists
     pub if_not_exists: bool,
+    /// An optional location for the catalog
+    pub location: Option<String>,
+    /// An optional managed location for the catalog
+    pub managed_location: Option<String>,
     /// Empty schema
     pub schema: DFSchemaRef,
 }

@@ -652,6 +652,8 @@ impl AsLogicalPlan for LogicalPlanNode {
                     CreateCatalog {
                         catalog_name: create_catalog.catalog_name.clone(),
                         if_not_exists: create_catalog.if_not_exists,
+                        location: create_catalog.location.clone(),
+                        managed_location: create_catalog.managed_location.clone(),
                         schema: pb_schema.try_into()?,
                     },
                 )))
@@ -1490,11 +1492,15 @@ impl AsLogicalPlan for LogicalPlanNode {
                 catalog_name,
                 if_not_exists,
                 schema: df_schema,
+                location,
+                managed_location,
             })) => Ok(protobuf::LogicalPlanNode {
                 logical_plan_type: Some(LogicalPlanType::CreateCatalog(
                     protobuf::CreateCatalogNode {
                         catalog_name: catalog_name.clone(),
                         if_not_exists: *if_not_exists,
+                        location: location.clone(),
+                        managed_location: managed_location.clone(),
                         schema: Some(df_schema.try_into()?),
                     },
                 )),
