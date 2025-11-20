@@ -320,9 +320,12 @@ impl Stream for FileStream {
         mut self: Pin<&mut Self>,
         cx: &mut Context<'_>,
     ) -> Poll<Option<Self::Item>> {
+        let elapsed_compute = self.baseline_metrics.elapsed_compute().clone();
+        let timer = elapsed_compute.timer();
         self.file_stream_metrics.time_processing.start();
         let result = self.poll_inner(cx);
         self.file_stream_metrics.time_processing.stop();
+        timer.done();
         self.baseline_metrics.record_poll(result)
     }
 }

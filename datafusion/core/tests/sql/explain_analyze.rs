@@ -319,6 +319,20 @@ async fn explain_analyze_parquet_pruning_metrics() {
 }
 
 #[tokio::test]
+async fn explain_analyze_csv_elapsed_compute() {
+    // Test that CSV file scans properly track elapsed_compute metric
+    // Regression test for https://github.com/apache/datafusion/issues/18795
+    let ctx = SessionContext::new();
+    register_aggregate_csv_by_sql(&ctx).await;
+
+    let sql = "EXPLAIN ANALYZE SELECT * FROM aggregate_test_100";
+    let plan = collect_plan_with_context(&sql, &ctx, ExplainAnalyzeLevel::Summary).await;
+
+    // Verify that DataSourceExec (CSV scan) has elapsed_compute metric tracked
+    assert_metrics!(&plan, "DataSourceExec", "elapsed_compute=");
+}
+
+#[tokio::test]
 async fn csv_explain_plans() {
     // This test verify the look of each plan in its full cycle plan creation
 
